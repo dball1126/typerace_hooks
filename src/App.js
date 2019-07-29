@@ -5,8 +5,11 @@ import './App.css';
 
 const App = () => {
   const SNIPPETS = ['Bears, beets, battlestar galactica', "What's Forrest Gump's password? 1Forrest1", 'Where do programmers like to hangout?  The Foo Bar'];
+  const INITIAL_GAME_STATE = {victory: false, startTime: null, endTime: null};
+  const [gameState, setGameState] = useState(INITIAL_GAME_STATE);
   const [snippet, setSnippet] = useState('');
   const [userText, setUserText] = useState('');
+
 
   const chooseSnippet = snippetIndex => () => {
     console.log('setSnippet', snippetIndex);
@@ -16,6 +19,13 @@ const App = () => {
   const updateUserText = event => {
     setUserText(event.target.value);
     console.log(`current userText`, userText);
+    if (event.target.value === snippet) {
+      setGameState({
+        ...gameState,
+        victory: true,
+        endTime: new Date().getTime() - gameState.startTime
+      })
+    }
   }
 
   return (
@@ -24,6 +34,8 @@ const App = () => {
       <hr />
       <h3>Snippet</h3>
       {snippet}
+      <hr />
+      <h4>{gameState.victory ? `Done! Time: ${gameState.endTime}ms` : null}</h4>
       <input value={userText} onChange={updateUserText} />
       <hr />
       {
